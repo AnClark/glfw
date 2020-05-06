@@ -130,6 +130,24 @@ if (WIN32)
     target_compile_definitions(glfw PRIVATE _UNICODE)
 endif()
 
+if (GLFW_THREAD_LOCAL_DATA)
+    if(MSVC)
+        set(GLFW_THREAD_LOCAL "__declspec(thread)")
+        set(GLFW_THREAD_LOCAL_EXTERN "__declspec(thread) extern")
+        set(GLFW_THREAD_LOCAL_STATIC "__declspec(thread) static")
+    else()
+        set(GLFW_THREAD_LOCAL "__thread")
+        set(GLFW_THREAD_LOCAL_EXTERN "extern __thread")
+        set(GLFW_THREAD_LOCAL_STATIC "static __thread")
+    endif()
+else()
+    set(GLFW_THREAD_LOCAL_EXTERN "extern")
+    set(GLFW_THREAD_LOCAL_STATIC "static")
+endif()
+target_compile_definitions(glfw PRIVATE GLFW_THREAD_LOCAL=${GLFW_THREAD_LOCAL}
+                                        GLFW_THREAD_LOCAL_EXTERN=${GLFW_THREAD_LOCAL_EXTERN}
+                                        GLFW_THREAD_LOCAL_STATIC=${GLFW_THREAD_LOCAL_STATIC})
+
 # HACK: When building on MinGW, WINVER and UNICODE need to be defined before
 # the inclusion of stddef.h (by glfw3.h), which is itself included before
 # win32_platform.h.  We define them here until a saner solution can be found

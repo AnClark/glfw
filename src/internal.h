@@ -585,7 +585,7 @@ struct _GLFWlibrary
 
 // Global state shared between compilation units of GLFW
 //
-extern _GLFWlibrary _glfw;
+GLFW_THREAD_LOCAL_EXTERN  _GLFWlibrary _glfw;
 
 
 //////////////////////////////////////////////////////////////////////////

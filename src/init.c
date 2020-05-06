@@ -43,14 +43,14 @@
 
 // Global state shared between compilation units of GLFW
 //
-_GLFWlibrary _glfw = { GLFW_FALSE };
+GLFW_THREAD_LOCAL _GLFWlibrary _glfw = { GLFW_FALSE };
 
 // These are outside of _glfw so they can be used before initialization and
 // after termination
 //
-static _GLFWerror _glfwMainThreadError;
-static GLFWerrorfun _glfwErrorCallback;
-static _GLFWinitconfig _glfwInitHints =
+GLFW_THREAD_LOCAL_STATIC _GLFWerror _glfwMainThreadError;
+GLFW_THREAD_LOCAL_STATIC GLFWerrorfun _glfwErrorCallback;
+GLFW_THREAD_LOCAL_STATIC _GLFWinitconfig _glfwInitHints =
 {
     GLFW_TRUE,      // hat buttons
     {
