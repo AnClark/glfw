@@ -97,7 +97,7 @@ set_target_properties(glfw PROPERTIES
                       VERSION ${GLFW_VERSION_MAJOR}.${GLFW_VERSION_MINOR}
                       SOVERSION ${GLFW_VERSION_MAJOR}
                       POSITION_INDEPENDENT_CODE ON
-                      C_STANDARD 99
+                      C_STANDARD 11
                       C_EXTENSIONS OFF
                       DEFINE_SYMBOL _GLFW_BUILD_DLL
                       FOLDER "GLFW3")
@@ -118,16 +118,18 @@ if ("${CMAKE_VERSION}" VERSION_LESS "3.16" AND APPLE)
                                 LANGUAGE C)
 endif()
 
+#    ---- Commenting because not expecting to build with VS < 2017 ----
+#
 # Make GCC warn about declarations that VS 2010 and 2012 won't accept for all
 # source files that VS will build (Clang ignores this because we set -std=c99)
-if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    set_source_files_properties(context.c init.c input.c monitor.c vulkan.c
-                                window.c win32_init.c win32_joystick.c
-                                win32_monitor.c win32_time.c win32_thread.c
-                                win32_window.c wgl_context.c egl_context.c
-                                osmesa_context.c PROPERTIES
-                                COMPILE_FLAGS -Wdeclaration-after-statement)
-endif()
+#if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+#    set_source_files_properties(context.c init.c input.c monitor.c vulkan.c
+#                                window.c win32_init.c win32_joystick.c
+#                                win32_monitor.c win32_time.c win32_thread.c
+#                                win32_window.c wgl_context.c egl_context.c
+#                                osmesa_context.c PROPERTIES
+#                                COMPILE_FLAGS -Wdeclaration-after-statement)
+#endif()
 
 # Enable a reasonable set of warnings
 if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR

@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdatomic.h>
 #include <assert.h>
 
 
@@ -44,6 +45,7 @@
 // Global state shared between compilation units of GLFW
 //
 _GLFWlibrary _glfw = { GLFW_FALSE };
+static atomic_int _init_ref_count = 0;
 
 // These are outside of _glfw so they can be used before initialization and
 // after termination
@@ -64,6 +66,12 @@ static _GLFWinitconfig _glfwInitHints =
 //
 static void terminate(void)
 {
+    int instance_count = atomic_fetch_sub(&_init_ref_count, 1);
+    if (instance_count > 1)
+    {
+        return;
+    }
+
     int i;
 
     memset(&_glfw.callbacks, 0, sizeof(_glfw.callbacks));
@@ -231,8 +239,12 @@ void _glfwInputError(int code, const char* format, ...)
 
 GLFWAPI int glfwInit(void)
 {
-    if (_glfw.initialized)
+    int instance_count = atomic_fetch_add(&_init_ref_count, 1);
+
+    if (_glfw.initialized || instance_count > 0)
+    {
         return GLFW_TRUE;
+    }
 
     memset(&_glfw, 0, sizeof(_glfw));
     _glfw.hints.init = _glfwInitHints;
