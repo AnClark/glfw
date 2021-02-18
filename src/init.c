@@ -34,8 +34,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <stdatomic.h>
 #include <assert.h>
+
+#ifdef WIN32
+#include <winnt.h>
+/* Because MSVC doesn't support C11 */
+typedef int atomic_int;
+inline int atomic_fetch_add(int* ptr, int val)
+{
+    return InterlockedIncrement(ptr) - 1;
+}
+inline int atomic_fetch_sub(int* ptr, int val)
+{
+    return InterlockedDecrement(ptr) + 1;
+}
+#else
+#include <stdatomic.h>
+#endif
 
 
 // The global variables below comprise all mutable global data in GLFW
