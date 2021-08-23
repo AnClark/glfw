@@ -605,6 +605,9 @@ static GLFWbool createNativeWindow(_GLFWwindow* window,
     int width = wndconfig->width;
     int height = wndconfig->height;
 
+    // Set parent to parent window if embedded window enabled
+    window->x11.parent = window->embeddedWindow ? (Window) window->parentId : _glfw.x11.root;
+
     if (wndconfig->scaleToMonitor)
     {
         width *= _glfw.x11.contentScaleX;
@@ -613,7 +616,7 @@ static GLFWbool createNativeWindow(_GLFWwindow* window,
 
     // Create a colormap based on the visual used by the current context
     window->x11.colormap = XCreateColormap(_glfw.x11.display,
-                                           _glfw.x11.root,
+                                           window->x11.parent,
                                            visual,
                                            AllocNone);
 
@@ -628,9 +631,8 @@ static GLFWbool createNativeWindow(_GLFWwindow* window,
 
     _glfwGrabErrorHandlerX11();
 
-    window->x11.parent = _glfw.x11.root;
     window->x11.handle = XCreateWindow(_glfw.x11.display,
-                                       _glfw.x11.root,
+                                       window->x11.parent,
                                        0, 0,   // Position
                                        width, height,
                                        0,      // Border width
