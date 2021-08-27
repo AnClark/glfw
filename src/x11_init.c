@@ -1036,12 +1036,14 @@ static int errorHandler(Display *display, XErrorEvent* event)
 //////                       GLFW internal API                      //////
 //////////////////////////////////////////////////////////////////////////
 
+static XErrorHandler old_error_handler;
+
 // Sets the X error handler callback
 //
 void _glfwGrabErrorHandlerX11(void)
 {
     _glfw.x11.errorCode = Success;
-    XSetErrorHandler(errorHandler);
+    old_error_handler = XSetErrorHandler(errorHandler);
 }
 
 // Clears the X error handler callback
@@ -1050,7 +1052,8 @@ void _glfwReleaseErrorHandlerX11(void)
 {
     // Synchronize to make sure all commands are processed
     XSync(_glfw.x11.display, False);
-    XSetErrorHandler(NULL);
+    XSetErrorHandler(old_error_handler);
+    old_error_handler = NULL;
 }
 
 // Reports the specified error, appending information about the last X error
