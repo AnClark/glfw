@@ -2009,6 +2009,13 @@ GLFWAPI void glfwTerminate(void);
  */
 GLFWAPI void glfwInitHint(int hint, int value);
 
+
+GLFWAPI int glfwGetInstanceCount();
+GLFWAPI void glfwOperateInstanceCount(int fetch_add_operator);
+
+
+
+
 /*! @brief Retrieves the version of the GLFW library.
  *
  *  This function retrieves the major, minor and revision numbers of the GLFW

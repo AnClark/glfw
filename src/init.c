@@ -46,6 +46,7 @@
 //
 _GLFWlibrary _glfw = { GLFW_FALSE };
 static atomic_int _init_ref_count = 0;
+static atomic_int _glfwInstanceCount = 0;
 
 // These are outside of _glfw so they can be used before initialization and
 // after termination
@@ -314,6 +315,17 @@ GLFWAPI void glfwInitHint(int hint, int value)
 
     _glfwInputError(GLFW_INVALID_ENUM,
                     "Invalid init hint 0x%08X", hint);
+}
+
+GLFWAPI int glfwGetInstanceCount()
+{
+    return atomic_fetch_add(&_glfwInstanceCount, 0);
+}
+
+GLFWAPI void glfwOperateInstanceCount(int fetch_add_operator)
+{
+    atomic_fetch_add(&_glfwInstanceCount, fetch_add_operator);
+    //_glfwInputError(GLFW_PLATFORM_ERROR, "glfwOperateInstanceCount: After operation, instance count is: %d", glfwGetInstanceCount());
 }
 
 GLFWAPI void glfwGetVersion(int* major, int* minor, int* rev)
